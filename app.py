@@ -10,8 +10,7 @@ import gensim
 import nltk
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet
-# from sklearn.externals import joblib
-from joblib import joblib
+from sklearn.externals import joblib
 from bs4 import BeautifulSoup
 from difflib import SequenceMatcher
 from heapq import nlargest as _nlargest
