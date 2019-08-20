@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document Search</title>
+
+   
+    <link href="https://fonts.googleapis.com/css?family=Courgette&display=swap" rel="stylesheet"> 
+
+    <link rel="icon" type="image/png"
+        href="https://media.licdn.com/dms/image/C510BAQG8yxe8kJzqcw/company-logo_200_200/0?e=2159024400&v=beta&t=LjP5UbOoxg8GQ8GGlFCHZdpAuvEShAgZ7TVQQaePKg8" />
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+        integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="jumbotron"
+        style="background: url('https://esgauge.com/images/corporate_sustainability.jpg');background-size: 100% 100%;background-repeat: repeat;">
+        <div class="row">
+            <div class="col-md-6">
+                <a style="text-decoration: none" href="/">
+                    <h1 class="display-3 text-center"><span
+                            style="font-size:100px; font-weight:600; color: rgb(107, 48, 48);"><b>IRGS</span> <span
+                            style="font-weight:600; color:grey">Query
+                            Searcher</span></b></h1>
+                </a>
+            </div>
+            <div class="col-md-6">
+                <p class="lead text-center" style="color:rgb(164, 185, 42);font-size:30px; font-weight:700; font-family: 'Courgette', cursive;margin-top:35px"><b><u>ARTIFICIAL INTELLIGENCE TOOL
+                            <br> FOR FINDING <br> LABELED PARAGRAPHS ACROSS DOCUMENTS</u></b></p>
+            </div>
+        </div>
+
+        <hr class="my-2">
+    </div>
+    <div class="container">
+        <form id="trainForm">
+
+
+            <div class="form-group">
+                <label for="company_id"><strong>Select Companies</strong></label>
+                <select id="company_id" required class="form-control" name="company_id" multiple="multiple">
+                </select>
+                <input type="hidden" id="company" name="company" />
+                <style>
+                    .select2 {
+                        width: 100% !important;
+                    }
+                </style>
+            </div>
+            <script>
+
+                $(document).ready(function () {
+                    $('#cover-spin').removeClass("d-none");
+                    $.ajax({
+                        url: "https://api.irganalytics.com/common/get_company_by_name/IRGS_ALL",
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function (data) {
+                            $('#cover-spin').addClass("d-none");
+                            var $select = $('#company_id');
+                            $select.find('option').remove();
+                            $.each(data, function (i, value) {
+                                $select.append('<option value=' + data[i].company_id + '>' + data[i].company_name + '</option>'); // return empty
+                            });
+                        },
+                        error: function (error) {
+                            console.log(error);
+                            $('#cover-spin').addClass("d-none");
+                        }
+                    });
+
+                });
+
+                $(document).ready(function () {
+                    $('#company_id').select2();
+                });
+            </script>
+
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="year"><strong>Fiscal Year</strong></label>
+                        <select class="form-control" id="year" name="year">
+
+                            <option value="2015">2015</option>
+                            <option value="2016">2016</option>
+                            <option value="2017">2017</option>
+                            <option value="2018">2018</option>
+                            <option value="2019">2019</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="document_type"><strong>Documents</strong></label>
+                        <select id="document_type" required class="form-control" name="document_type"
+                            multiple="multiple">
+                            <option value="Proxy">Proxy</option>
+                            <option value="Governance">Governance</option>
+                            <option value="Bylaws">Bylaws</option>
+                            <option value="Voting_Document">8-K</option>
+                            <option value="Charter1">Audit Charter</option>
+                            <option value="Charter2">Nom/Gov Charter</option>
+                            <option value="Charter3">Comp Charter</option>
+                            <option value="Other">Other SEC Fillings</option>
+                            <option value="Amendment">Amendment</option>
+                            <option value="AntiTake">Anti Take</option>
+                            <option value="Amendment1">Amendment1</option>
+                            <option value="Amendment2">Amendment2</option>
+                        </select>
+                    </div>
+                    <script>
+                        $(document).ready(function () {
+                            $('#document_type').select2();
+                        });
+                    </script>
+                </div>
+
+                <div class="col-md-4">
+                    <a>
+                        <button style="margin-top: 30px " type="button" id="find_labels"
+                            class="btn btn-info float-right">Find
+                            Labels</button>
+                    </a>
+                    <script>
+                        $(function () {
+                            $('#find_labels').click(function () {
+                                $("#resultList li").remove();
+                                $("#docFrameRes").addClass('d-none');
+                                // $('#resDiv').addClass('col-md-12');
+
+                                $('#c_numbers').val("Please Select...");
+                                $('#c_labels').val("Please Select...");
+
+                                if ($('#company_id').val() == '') {
+
+                                    $('#emptyFieldsError').modal('show');
+                                    $('#company_id').focus();
+
+                                } else if ($('#document_type').val() == '') {
+
+                                    $('#emptyFieldsError').modal('show');
+                                    $('#document_type').focus();
+
+                                } else {
+
+                                    var company_obj = [];
+                                    $("#company_id option:selected").each(function () {
+                                        var $this = $(this);
+                                        if ($this.length) {
+                                            var selText = $this.text();
+                                            var selId = $this.val();
+                                            company_obj.push({ "company_text": selText, "company_id": selId });
+                                        }
+                                    });
+
+                                    var year = $('#year').val();
+
+                                    var doc_obj = []
+                                    $("#document_type option:selected").each(function () {
+                                        var $this = $(this);
+                                        if ($this.length) {
+                                            var selDoc = $this.val();
+                                            doc_obj.push({ "doc_type": selDoc });
+                                        }
+                                    });
+
+                                    var label_data = {
+                                        "company_obj": company_obj,
+                                        "year": year,
+                                        "doc_obj": doc_obj
+                                    };
+
+                                    $.ajax({
+                                        beforeSend: function () {
+                                            // $('#cover-spin').show(0);
+                                            $('#cover-spin').removeClass("d-none");
+
+                                        },
+                                        //url: 'http://127.0.0.1:5000/find-labels',
+                                        url: '/find-labels',
+                                        data: JSON.stringify(label_data),
+                                        contentType: "application/json; charset=utf-8",
+                                        dataType: "json",
+                                        type: 'POST',
+                                        success: function (response) {
+                                            console.log(response)
+                                            $('#serverErrorData li').remove();
+                                            // $('#cover-spin').hide(0);
+                                            $('#cover-spin').addClass("d-none");
+                                            $("#show_label_dropdown").removeClass("d-none");
+                                            $("#show_number_dropdown").removeClass("d-none");
+                                            if (response[0].indexOf('NOT FOUND') > -1) {
+                                                // $('#cover-spin').hide(0);
+                                                $('#cover-spin').addClass("d-none");
+                                                response.forEach(element => {
+                                                    $('#serverErrorData').append("<li style='color:red;'>" + element + "</li>");
+                                                });
+                                                $('#docsNotFoundModel').modal('show');
+                                            } else {
+                                                $('#resultList li').remove();
+                                                response.forEach(element => {
+                                                    setTimeout(() => {
+                                                        $("#resultList").append("<li style='margin: 20px auto'>" + element + "</li>");
+                                                        // $('#cover-spin').hide(0);
+                                                        $('#cover-spin').addClass("d-none");
+                                                    }, 1000);
+                                                });
+                                                // $('#cover-spin').hide(0);
+                                                $('#cover-spin').addClass("d-none");
+                                            }
+
+                                        },
+                                        error: function (error) {
+                                            // $('#cover-spin').hide(0);
+                                            $('#cover-spin').addClass("d-none");
+                                            console.log(error);
+                                        }
+                                    });
+                                }
+                            });
+                        });
+
+
+                    </script>
+                </div>
+            </div>
+
+
+        </form>
+
+        <div class="row">
+            <div class="col-md-10 d-none" id="show_label_dropdown">
+                <div class="form-group">
+                    <label for="c_labels"><strong>Class Labels</strong></label>
+                    <select class="form-control" id="c_labels" name="c_labels">
+                        <option>Please Select...</option>
+                        <option value="1">Authority to set the number of Board Seats</option>
+                        <option value="2">Voting Standard for Director Elections</option>
+                        <option value="3">Filling of newly created Board Seats</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-2 d-none" id="show_number_dropdown">
+                <div class="form-group">
+                    <label for="c_numbers"><strong>Top</strong></label>
+                    <select class="form-control" id="c_numbers" name="c_numbers">
+                        <option>Please Select...</option>
+                        <option value="all">ALL</option>
+                        <!-- <option value="3">3</option> -->
+                        <!-- <option value="5">5</option> -->
+                        <option value="10">10</option>
+                        <!-- <option value="15">15</option> -->
+                        <option value="20">20</option>
+                    </select>
+                </div>
+            </div>
+            <script>
+
+                $(document).ready(function () {
+
+                    $("#c_labels").change(function () {
+                        $('#c_numbers').val("Please Select...");
+                    });
+
+                    $("#c_numbers").change(function () {
+                        var c_labels = $('#c_labels').val();
+                        var c_numbers = $('option:selected', $(this)).val();
+                        $.ajax({
+                            beforeSend: function () {
+                                // $('#cover-spin').show(0);
+                                $('#cover-spin').removeClass("d-none");
+                            },
+                            //url: 'http://127.0.0.1:5000/find-labels',
+                            url: '/find-labelsresults',
+                            data: { c_labels: c_labels, c_numbers: c_numbers },
+                            type: 'POST',
+                            success: function (response) {
+                            	$("#resultIframe").removeClass("d-none");
+                            	$("#docFrameError").removeClass("d-none");
+                                $('#serverErrorData li').remove();
+                                if (response[0].indexOf('NOT FOUND') > -1) {
+                                    // $('#cover-spin').hide(0);
+                                    $('#cover-spin').addClass("d-none");
+                                    response.forEach(element => {
+                                        $('#serverErrorData').append("<li style='color:red;'>" + element + "</li>");
+                                    });
+                                    $('#docsNotFoundModel').modal('show');
+                                } else {
+                                    $('#resultList li').remove();
+                                    response.forEach(element => {
+                                        console.log(element)
+                                        var res = element.split("split");
+
+                                        setTimeout(() => {
+                                            // $("#resultList").append("<li style='margin: 20px auto'>" + res[0] + "<br>" + res[1] + "<br>" + res[2] + "</li>");
+                                            $("#resultList").append("<li id='resList'  style='margin: 20px auto;'>"+ " <label class='switch float-right'><input type='checkbox' id='feedback'><span class='slider'></span></label> <a id='reslink'  style='text-decoration:none;color:black;cursor:pointer;' value=" + res[0] + " >" + res[1] + "<br>" + res[2] + "<br><br>" + res[3] + "</a>" + "</li>");
+                                            // $('#cover-spin').hide(0);
+                                            $('#cover-spin').addClass("d-none");
+                                        }, 1000);
+                                    });
+                                    // $('#cover-spin').hide(0);
+                                    $('#cover-spin').addClass("d-none");
+                                }
+                            },
+                            error: function (error) {
+                                $('#cover-spin').hide(0);
+                                console.log(error);
+                            }
+                        });
+                    });
+                });
+            </script>
+
+            <!-- <label class='switch'><input type='checkbox'><span class='slider'></span></label> -->
+            <!-- <label class="switch">
+                <input type="checkbox">
+                <span class="slider"></span>
+              </label> -->
+            <!-- <input type='checkbox' checked data-toggle='toggle' data-on='Relevant' data-off='Irrelevant' data-onstyle='success' data-offstyle='secondary'> -->
+            <style>
+                /* The switch - the box around the slider */
+                .switch {
+                    position: relative;
+                    display: inline-block;
+                    width: 60px;
+                    height: 34px;
+                }
+
+                /* Hide default HTML checkbox */
+                .switch input {
+                    opacity: 0;
+                    width: 0;
+                    height: 0;
+                }
+
+                /* The slider */
+                .slider {
+                    position: absolute;
+                    cursor: pointer;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background-color: #ccc;
+                    -webkit-transition: .4s;
+                    transition: .4s;
+                }
+
+                .slider:before {
+                    position: absolute;
+                    content: "";
+                    height: 26px;
+                    width: 26px;
+                    left: 4px;
+                    bottom: 4px;
+                    background-color: white;
+                    -webkit-transition: .4s;
+                    transition: .4s;
+                }
+
+                input:checked+.slider {
+                    /* background-color: #2196F3; */
+                    background-color: green
+                }
+
+                input:focus+.slider {
+                    box-shadow: 0 0 1px #2196F3;
+                }
+
+                input:checked+.slider:before {
+                    -webkit-transform: translateX(26px);
+                    -ms-transform: translateX(26px);
+                    transform: translateX(26px);
+                }
+
+                /* Rounded sliders */
+                .slider.round {
+                    border-radius: 34px;
+                }
+
+                .slider.round:before {
+                    border-radius: 50%;
+                }
+            </style>
+        </div>
+
+    </div>
+    <div class="row" style="margin: 50px">
+        <style>
+            /* #cover-spin {
+                    position: fixed;
+                    width: 100%;
+                    left: 0;
+                    right: 0;
+                    top: 0;
+                    bottom: 0;
+                    background-color: rgba(255, 255, 255, 0.7);
+                    z-index: 9999;
+                    display: none;
+                }
+    
+                @-webkit-keyframes spin {
+                    from {
+                        -webkit-transform: rotate(0deg);
+                    }
+    
+                    to {
+                        -webkit-transform: rotate(360deg);
+                    }
+                }
+    
+                @keyframes spin {
+                    from {
+                        transform: rotate(0deg);
+                    }
+    
+                    to {
+                        transform: rotate(360deg);
+                    }
+                }
+    
+                #cover-spin::after {
+                    content: '';
+                    display: block;
+                    position: absolute;
+                    left: 48%;
+                    top: 40%;
+                    width: 40px;
+                    height: 40px;
+                    border-style: solid;
+    
+                    border-top-color: transparent;
+                    border-width: 4px;
+                    border-radius: 50%;
+                    -webkit-animation: spin .8s linear infinite;
+                    animation: spin .8s linear infinite;
+                } */
+
+            #cover-spin {
+                background: url('https://loading.io/spinners/comets/lg.comet-spinner.gif') no-repeat center center transparent;
+                background-color: #ffffff;
+                float: left;
+                height: 100%;
+                min-height: 333px;
+                width: 100% !important;
+                z-index: 444;
+                position: absolute;
+                opacity: 0.92;
+                left: 0;
+                top: 0;
+            }
+        </style>
+        {% if loader %}
+        <!-- <div id="cover-spin"></div> -->
+        <!-- <center> -->
+        <div class="d-none" id="cover-spin">
+            <span class="waiting-info"></span>
+        </div>
+        <!-- </center> -->
+
+
+        {% endif %}
+        <div class="col-md-6" id="resDiv" style="float:left; overflow-y: auto; height:800px; ">
+
+
+
+
+            <ol id="resultList" style="margin: 40px auto; font-weight: 500;font-size: 1.3em">
+
+            </ol>
+            <style>
+                #resultList li {
+                    background: rgb(127, 207, 253);
+                    color: black;
+                }
+
+                #resultList li:nth-child(odd) {
+                    background: rgb(127, 207, 253);
+                    color: black;
+                }
+            </style>
+
+            <script>
+                $(document).ready(function () {
+
+                    $(document).on("change", "input[id='feedback']", function () {
+                        if (this.checked) {
+                            console.log("checked");
+                            console.log($(this).parent().nextAll('a').text());
+                            console.log($('#c_labels option:selected').text());
+                        }
+                    });
+
+                });
+                $(document).on('click', '#reslink', function () {
+                    // $('#resDiv').removeClass('col-md-12');
+                    // $('#resDiv').addClass('col-md-6');
+                    $("#docFrameError").addClass("d-none");
+                    $("#docFrameRes").removeClass("d-none");
+                    var curr_link = $(this).attr('value');
+                    curr_link = curr_link.split('http');
+                    curr_link = "https" + curr_link[1];
+                    
+                    $("#docFrameRes").removeAttr('src');
+                    $("#docFrameRes").attr('src', curr_link);
+
+                });
+            </script>
+        </div>
+        <div class="col-md-6 d-none" id="resultIframe" >
+           
+                <iframe style="width: 100%; height:800px" id="docFrameError" src="https://irgs.irganalytics.com/docs" frameborder="1"></iframe>
+           		<iframe style="width: 100%; height:800px" id="docFrameRes" class="d-none" frameborder="1"></iframe>
+        </div>
+    </div>
+    <!-- Docs Not Found Model -->
+    <div class="modal fade" id="docsNotFoundModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p class="modal-title" id="myModalLabel" style="text-align:center">DOCS NOT FOUND</p>
+                </div>
+                <div class="modal-body">
+                    <ol id="serverErrorData">
+
+                    </ol>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Training Success Model -->
+    <div class="modal fade" id="trainingSuccessModel" tabindex="-1" role="dialog"
+        aria-labelledby="trainingSuccessModelLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p class="modal-title" id="trainingSuccessModelLabel" style="text-align:center">Modal Info</p>
+                </div>
+                <div class="modal-body text-center">
+                    <span class="text-success">Model Trained Successfully</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Training Failed Model -->
+    <div class="modal fade" id="trainingFailedModel" tabindex="-1" role="dialog"
+        aria-labelledby="trainingFailedModelLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p class="modal-title" id="trainingFailedModelLabel" style="text-align:center">Modal Error</p>
+                </div>
+                <div class="modal-body text-center">
+                    <span class="text-warning">Model Training Failed!</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Not Trained -->
+    <div class="modal fade" id="modelNotTrained" tabindex="-1" role="dialog" aria-labelledby="modelNotTrainedLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p class="modal-title" id="modelNotTrainedLabel" style="text-align:center">Modal Error</p>
+                </div>
+                <div class="modal-body text-center">
+                    <span class="text-info">Model Not Trained!</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty Fields Error -->
+    <div class="modal fade" id="emptyFieldsError" tabindex="-1" role="dialog" aria-labelledby="emptyFieldsErrorLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p class="modal-title" id="emptyFieldsErrorLabel" style="text-align:center">Empty Fields Error
+                    </p>
+                </div>
+                <div class="modal-body text-center">
+                    <span class="text-primary">Please Fill Empty Fields</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
+</div>
+
+</body>
+
+</html>
