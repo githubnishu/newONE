@@ -8,7 +8,7 @@ html2text==2018.1.9
 regex==2019.6.5
 requests==2.22.0
 gensim==3.4.0
-nltk==3.4.3
+nltk==3.4.5
 beautifulsoup4==4.7.1
 pyodbc==4.0.26
 gunicorn==19.9.0
