@@ -3,7 +3,7 @@ utils==0.9.0
 urllib3==1.24.2
 utils==0.9.0
 Flask==1.0.3
-Flask-Cors==3.0.8
+Flask-Cors==3.0.9
 html2text==2018.1.9
 regex==2019.6.5
 requests==2.22.0
